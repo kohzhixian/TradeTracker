@@ -32,9 +32,32 @@ const createUser = async (req, res, next) => {
     res.status(201).json({tokenData: newUser});
 }
 
+const updateUser = async (req, res, next) => {
+  const userId = req.params.userId;
+  const {username, email, password} = req.body;
+  try{
+    await userService.updateUser(userId, username, email, password);
+    res.json({'Message': 'Update successful'});
+  }catch(err){
+    throw new Error('Update failed');
+  }
+}
+
+const deleteUser = async (req, res, next) => {
+  const userId = req.params.userId;
+  try{
+    await userService.deleteUser(userId);
+    res.json({'Message': 'Delete successful'});
+  }catch(err){
+    throw new Error('Delete User failed');
+  }
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
     login,
-    createUser
+    createUser,
+    updateUser,
+    deleteUser
 }
