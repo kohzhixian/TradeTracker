@@ -4,11 +4,13 @@ require("dotenv").config({path: '.env.dev'});
 const app = express();
 
 const userRoutes = require('./src/api/routes/user-routes');
+const stockMgmtRoutes = require('./src/api/routes/stock-mgmt-routes');
 
 //used to parse json bodies
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
+app.use('/api/stocks', stockMgmtRoutes);
 
 const port = process.env.PORT || 4000;
 const dbUrl = process.env.MONGODB_URL;
