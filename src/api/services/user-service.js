@@ -2,6 +2,10 @@ const userSchema = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
+
+
+
 const getAllUsers = async (condition) => {
   try {
     if (condition) {
