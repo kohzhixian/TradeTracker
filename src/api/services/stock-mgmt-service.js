@@ -21,7 +21,7 @@ const getStockByName = async (stockName) => {
 const getStockBySymbol = async (stockSymbol) => {
     stockSymbol = stockSymbol.toUpperCase();
     try{
-        const stock = await stockMgmtSchema.find({stock_symbol: stockSymbol});
+        const stock = await stockMgmtSchema.find({ticker: stockSymbol});
         return stock;
     }catch(err){
         throw new Error('No stock found with symbol');

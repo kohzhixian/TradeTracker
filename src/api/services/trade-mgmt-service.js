@@ -20,18 +20,35 @@ const getTradeByTradeId = async (tradeId) => {
 
 const getTradeByUserId = async (userId) => {
     try{
-        const trades = await trademgmtSchema.find({userId: userId});
+        const trades = await trademgmtSchema.find({userId: userId}).populate({
+            path: 'stockId',
+            select: '-_id'
+        });
         return trades;
     }catch(err){
         throw new Error('No trades found');
     }
 }
 
-const updateTrade = async (userId, tradeId, volume) => {
+const updateTrade = async (tradeId, userId, volume) => {
+    let existingTrade;
     try{
-        const trade = await trademgmtSchema.find();
+        existingTrade = await trademgmtSchema.findOne({_id: tradeId, userId: userId});
     }catch(err){
-        throw new Error('Cannot update trade');
+        throw new Error('No Trade found');
+    }
+
+
+    if(!existingTrade){
+        throw new Error('No Trade found');
+    }
+    existingTrade.volume = volume;
+
+    try{
+        await existingTrade.save();
+    }catch(err){
+        console.error('Failed to update trade:', err);
+        throw new Error('cannot update trade');
     }
 }
 

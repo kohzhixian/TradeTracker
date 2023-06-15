@@ -18,7 +18,15 @@ const getTradeByUserId = async (req, res, next) => {
 }
 
 const updateTrade = async (req, res, next) => {
-
+    const tradeId = req.params.tradeId;
+    const userId = req.params.userId;
+    const {volume} = req.body;
+    try{
+        await trademgmtService.updateTrade(tradeId, userId, volume);
+        res.json({message: 'Update Trade success'});
+    }catch(err){
+        next(err);
+    }
 }
 
 module.exports = {
