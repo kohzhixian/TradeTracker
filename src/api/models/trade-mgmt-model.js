@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const uniqueValiator = require('mongoose-unique-validator');
 
 const trademgmtSchema = new mongoose.Schema({
-    traderId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -12,28 +12,27 @@ const trademgmtSchema = new mongoose.Schema({
         ref: 'Stockmanagement',
         required: true
     },
-    action: {
-        type: String,
-        required: true
-    },
-    quantity: {
+    volume: {
         type: Number,
         required: true
     },
-    price: {
+    price_per_share: {
         type: Number,
         required: true
     },
-    date: {
-        type: Date,
-        default: Date.now,
+    total_purchase: {
+        type: Number,
         required: true
     },
-    strategyId: {
-        type: String,
+    exit_price: {
+        type: Number,
         required: true
     },
-    profitOrLoss: {
+    total_sell_price:{
+        type: Number,
+        required: true
+    },
+    earnings: {
         type: Number,
         required: true
     }

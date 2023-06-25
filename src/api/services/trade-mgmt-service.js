@@ -30,24 +30,23 @@ const getTradeByUserId = async (userId) => {
     }
 }
 
-const updateTrade = async (tradeId, userId, volume) => {
+const updateTrade = async (tradeId, volume) => {
     let existingTrade;
     try{
-        existingTrade = await trademgmtSchema.findOne({_id: tradeId, userId: userId});
+        existingTrade = await trademgmtSchema.findOne({_id: tradeId});
     }catch(err){
         throw new Error('No Trade found');
     }
 
-
     if(!existingTrade){
-        throw new Error('No Trade found');
+        throw new Error('No Trade found !!!');
     }
     existingTrade.volume = volume;
 
     try{
         await existingTrade.save();
     }catch(err){
-        console.error('Failed to update trade:', err);
+        console.log(err.message);
         throw new Error('cannot update trade');
     }
 }

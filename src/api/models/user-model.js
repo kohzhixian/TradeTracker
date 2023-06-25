@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
     isDeleted: {
         type: String,
         required: true
+    },
+    profileImage: {
+        type: String
     }
     //Enable schmea validation
 }, {validateBeforeSave: true});

@@ -6,6 +6,6 @@ router.get('/', trademgmtController.getAllTrades);
 router.get('/:tradeId', trademgmtController.getTradeByTradeId);
 router.get('/user/:userId', trademgmtController.getTradeByUserId);
 
-router.patch('/updatetrade/:tradeId/:userId', trademgmtController.updateTrade);
+router.patch('/updatetrade/:tradeId', trademgmtController.updateTrade);
 
 module.exports = router;

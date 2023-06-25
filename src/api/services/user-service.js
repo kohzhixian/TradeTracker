@@ -16,13 +16,14 @@ const getAllUsers = async (condition) => {
 
 const getUserById = async (userId) => {
   try {
-    return await userSchema.findById(userId);
+    return await userSchema.findById(userId).select('-password');
   } catch (err) {
     throw new Error("No user found with userId");
   }
 };
 
 const login = async (email, password) => {
+  const tokenPassword = process.env.tokenPassword;
   let existingUser;
   try {
     existingUser = await userSchema.findOne({ email: email });
@@ -47,7 +48,7 @@ const login = async (email, password) => {
   };
   let token;
   try {
-    token = jwt.sign(tokenData, "super-secret-password", { expiresIn: "1h" });
+    token = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
   } catch (err) {
     throw new Error("Token creation failed");
   }
