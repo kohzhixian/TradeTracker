@@ -1,6 +1,8 @@
 const userSchema = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require("dotenv").config({path: '.env.dev'});
+
 const getAllUsers = async (condition) => {
   try {
     if (condition) {
@@ -14,13 +16,14 @@ const getAllUsers = async (condition) => {
 
 const getUserById = async (userId) => {
   try {
-    return await userSchema.findById(userId);
+    return await userSchema.findById(userId).select('-password');
   } catch (err) {
     throw new Error("No user found with userId");
   }
 };
 
 const login = async (email, password) => {
+  const tokenPassword = process.env.tokenPassword;
   let existingUser;
   try {
     existingUser = await userSchema.findOne({ email: email });
@@ -28,7 +31,7 @@ const login = async (email, password) => {
     throw new Error("Login failed, Please try again");
   }
 
-  if (!existingUser) {
+  if (!existingUser || existingUser.isDeleted === 'Yes') {
     throw new Error("User does not exist");
   }
 
@@ -45,7 +48,7 @@ const login = async (email, password) => {
   };
   let token;
   try {
-    token = jwt.sign(tokenData, "super-secret-password", { expiresIn: "1h" });
+    token = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
   } catch (err) {
     throw new Error("Token creation failed");
   }
@@ -54,6 +57,7 @@ const login = async (email, password) => {
 };
 
 const createUser = async (email, firstName, lastName, password) => {
+  const tokenPassword = process.env.tokenPassword;
   let existingUser;
   try {
     existingUser = await userSchema.findOne({ email: email });
@@ -72,11 +76,14 @@ const createUser = async (email, firstName, lastName, password) => {
     throw new Error("Could not create user");
   }
 
+  let isDeleted = 'No';
+
   const createUser = new userSchema({
     email,
     firstName,
     lastName,
     password: hashPassword,
+    isDeleted
   });
 
   try {
@@ -91,7 +98,7 @@ const createUser = async (email, firstName, lastName, password) => {
   };
   let token;
   try {
-    token = jwt.sign(tokenData, "super-secret-password", { expiresIn: "1h" });
+    token = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
   } catch (err) {
     throw new Error("Token creation failed");
   }
@@ -99,9 +106,63 @@ const createUser = async (email, firstName, lastName, password) => {
   return tokenData;
 };
 
+const updateUser = async (userId, username, email, password) => {
+  let existingUser;
+  try{
+    existingUser = await userSchema.findById(userId);
+  }catch(err){
+    throw new Error('No user found');
+  }
+
+  if(!existingUser){
+    throw new Error('No user found');
+  }
+
+  let hashPassword;
+  try{
+    hashPassword = await bcrypt.hash(password, 12);
+  }catch(err){
+    throw new Error('Hashing of password failed');
+  }
+
+  existingUser.username = username;
+  existingUser.email = email;
+  existingUser.password = hashPassword;
+
+  try{
+    await existingUser.save();
+  }catch(err){
+    throw new Error('Update User failed');
+  }
+
+}
+
+const deleteUser = async (userId) => {
+  let existingUser;
+  try{
+    existingUser = await userSchema.findById(userId);
+  }catch(err){
+    throw new Error('Delete User failed!');
+  }
+
+  if(!existingUser){
+    throw new Error('No user to delete');
+  }
+
+  existingUser.isDeleted = 'Yes';
+
+  try{
+    await existingUser.save();
+  }catch(err){
+    throw new Error('Failed to update isDeleted');
+  }
+}
+
 module.exports = {
   getAllUsers,
   getUserById,
   login,
   createUser,
+  updateUser,
+  deleteUser
 };

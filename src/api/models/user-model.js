@@ -18,6 +18,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 8
+    },
+    isDeleted: {
+        type: String,
+        required: true
+    },
+    profileImage: {
+        type: String
     }
     //Enable schmea validation
 }, {validateBeforeSave: true});
