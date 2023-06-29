@@ -46,7 +46,6 @@ const updateTrade = async (tradeId, volume) => {
     try{
         await existingTrade.save();
     }catch(err){
-        console.log(err.message);
         throw new Error('cannot update trade');
     }
 }
