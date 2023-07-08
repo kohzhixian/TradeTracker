@@ -28,6 +28,8 @@ mongoose
     console.log(error);
   });
 
+  console.log("test gitignore");
+
 // app.use('/api/trades', trademgmtRoutes);
 // app.use('/api/stocks', stockMgmtRoutes);
 // app.use('/api/refreshtoken', refreshTokenRoutes);
