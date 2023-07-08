@@ -1,4 +1,5 @@
 const userSchema = require("../models/user-model");
+const refreshtokenSchema = require("../models/refreshToken-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config({path: '.env.dev'});
@@ -37,8 +38,12 @@ const login = async (email, password) => {
 
   let isPasswordValid;
   try {
-    isPasswordValid = bcrypt.compare(password, existingUser.password);
+    isPasswordValid = await bcrypt.compare(password, existingUser.password);
   } catch (err) {
+    throw new Error("Wrong credentials, Please try again");
+  }
+
+  if(!isPasswordValid){
     throw new Error("Wrong credentials, Please try again");
   }
 
@@ -52,6 +57,28 @@ const login = async (email, password) => {
   } catch (err) {
     throw new Error("Token creation failed");
   }
+
+  let decodedToken;
+  try{
+    decodedToken = jwt.verify(token, tokenPassword);
+  }catch(err){
+    throw new Error("Failed to verify token");
+  }
+  let userId = existingUser._id;
+
+  const newRefreshToken = new refreshtokenSchema({
+    userId,
+    token,
+    created_at: decodedToken.iat,
+    expires_at: decodedToken.exp
+  })
+
+  try{
+    await newRefreshToken.save();
+  }catch(err){
+    throw new Error("Failed to save token");
+  }
+
   tokenData.token = token;
   return tokenData;
 };
