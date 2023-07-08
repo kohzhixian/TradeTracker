@@ -1,6 +1,7 @@
-const userService = require("../services/user-service");
+import { RequestHandler } from "express";
+import userService from "../services/user-service";
 
-const getAllUsers = async (req, res, next) => {
+const getAllUsers:RequestHandler = async (req, res, next) => {
   try {
     const users = await userService.getAllUsers("-password");
     res.status(200).json({ users: users });
@@ -9,7 +10,7 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-const getUserById = async (req, res, next) => {
+const getUserById:RequestHandler = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     const user = await userService.getUserById(userId);
@@ -19,7 +20,7 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-const login = async (req, res, next) => {
+const login:RequestHandler = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const loginTokenData = await userService.login(email, password);
@@ -29,7 +30,7 @@ const login = async (req, res, next) => {
   }
 };
 
-const createUser = async (req, res, next) => {
+const createUser:RequestHandler = async (req, res, next) => {
   const { email, firstName, lastName, password } = req.body;
   try {
     const newUser = await userService.createUser(
@@ -38,13 +39,13 @@ const createUser = async (req, res, next) => {
       lastName,
       password
     );
-    res.status(201).json({ tokenData: newUser });
+    res.status(201).json({ message: 'User created'});
   } catch (err) {
     next(err);
   }
 };
 
-const updateUser = async (req, res, next) => {
+const updateUser:RequestHandler = async (req, res, next) => {
   const userId = req.params.userId;
   const { username, email, password } = req.body;
   try {
@@ -55,7 +56,7 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-const deleteUser = async (req, res, next) => {
+const deleteUser:RequestHandler = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     await userService.deleteUser(userId);
@@ -64,11 +65,5 @@ const deleteUser = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = {
-  getAllUsers,
-  getUserById,
-  login,
-  createUser,
-  updateUser,
-  deleteUser,
-};
+
+export default {getAllUsers, getUserById, login, createUser, updateUser, deleteUser};
