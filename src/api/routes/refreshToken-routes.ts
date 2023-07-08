@@ -1,9 +1,8 @@
-// const express = require("express");
-// const Router = express.Router();
-// const refreshTokenController = require("../controllers/refreshToken-controller");
+import express from 'express';
 
-// Router.get('/getTokenByUserId', refreshTokenController.getTokenByUserId);
+const router = express.Router();
+import refreshTokenController from '../controllers/refreshToken-controller';
 
-// Router.delete('/logout/:userId', refreshTokenController.logout);
+router.delete('/logout/:userId', refreshTokenController.logout);
 
-// module.exports = Router;
+export = router; 

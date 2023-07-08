@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import User from "../models/user-model";
+import RefreshToken from "../models/refreshToken-model";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { RequestHandler } from "express";
-import { ObjectId } from "mongodb";
+import { JwtPayload } from "jsonwebtoken";
 
 dotenv.config({ path: ".env.dev" });
 
@@ -68,26 +68,26 @@ const login = async (email: string, password: string) => {
     throw new Error("Token creation failed");
   }
 
-  // let decodedToken;
-  // try {
-  //   decodedToken = jwt.verify(token, tokenPassword);
-  // } catch (err) {
-  //   throw new Error("Failed to verify token");
-  // }
-  // let userId = existingUser._id;
+  let decodedToken:JwtPayload;
+  try {
+    decodedToken = jwt.verify(token, tokenPassword) as JwtPayload;
+  } catch (err) {
+    throw new Error("Failed to verify token");
+  }
+  let userId = existingUser._id;
 
-  // const newRefreshToken = new refreshtokenSchema({
-  //   userId,
-  //   token,
-  //   created_at: decodedToken.iat,
-  //   expires_at: decodedToken.exp,
-  // });
+  const newRefreshToken = new RefreshToken({
+    userId,
+    token,
+    created_at: decodedToken.iat,
+    expires_at: decodedToken.exp,
+  });
 
-  // try {
-  //   await newRefreshToken.save();
-  // } catch (err) {
-  //   throw new Error("Failed to save token");
-  // }
+  try {
+    await newRefreshToken.save();
+  } catch (err) {
+    throw new Error("Failed to save token");
+  }
 
   const tokenResponse = {
     ...tokenData,
