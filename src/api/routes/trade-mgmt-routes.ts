@@ -1,11 +1,12 @@
-// const express = require('express');
-// const router = express.Router();
-// const trademgmtController = require('../controllers/trade-mgmt-controller');
+import express from "express";
+import tradeMgmtController from "../controllers/trade-mgmt-controller";
 
-// router.get('/', trademgmtController.getAllTrades);
-// router.get('/:tradeId', trademgmtController.getTradeByTradeId);
-// router.get('/user/:userId', trademgmtController.getTradeByUserId);
+const router = express.Router();
 
-// router.patch('/updatetrade/:tradeId', trademgmtController.updateTrade);
+router.get('/user/:userId', tradeMgmtController.getTradeByUserId);
+router.get('/:tradeId', tradeMgmtController.getTradeByTradeId);
+router.get('/', tradeMgmtController.getAllTrades);
 
-// module.exports = router;
+router.patch('/updatetrade/:tradeId', tradeMgmtController.updateTrade);
+
+export = router;

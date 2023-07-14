@@ -1,6 +1,6 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import { IRefreshTokenModel } from "./refreshToken-model";
+
 
 export interface IStocks {
   ticker: string;
