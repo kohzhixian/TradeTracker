@@ -11,4 +11,13 @@ const logout:RequestHandler = async(req, res, next) => {
     }
 }
 
-export default {logout};
+const getAllRefreshTokens:RequestHandler = async(req, res, next) => {
+    try{
+        const result = await refreshTokenService.getAllRefreshTokens();
+        res.json({refreshTokens: result});
+    }catch(err){
+        next(err);
+    }
+}
+
+export default {logout, getAllRefreshTokens};

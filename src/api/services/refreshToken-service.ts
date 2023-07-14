@@ -13,5 +13,15 @@ const logout = async (userId:string) => {
     }
 }
 
+//This function is just for development purposes
+const getAllRefreshTokens = async () => {
+    try{
+        const result = await RefreshToken.find();
+        return result;
+    }catch(err){
+        throw new Error("No refresh tokens found");
+    }
+}
 
-export default {logout};
+
+export default {logout, getAllRefreshTokens};

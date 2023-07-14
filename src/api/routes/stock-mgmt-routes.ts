@@ -1,11 +1,12 @@
-// const express = require('express');
-// const Router = express.Router();
-// const stockMgmtController = require('../controllers/stock-mgmt-controller');
+import express from "express";
+import stockMgmtController from "../controllers/stock-mgmt-controller";
 
-// Router.get('/', stockMgmtController.getAllStocks);
-// Router.get('/stockname/:stockName', stockMgmtController.getStockByName);
-// Router.get('/stocksymbol/:stockSymbol', stockMgmtController.getStockBySymbol);
+const router = express.Router();
 
-// Router.post('/createstock', stockMgmtController.createStock);
+router.get('/', stockMgmtController.getAllStocks);
+router.get('/stockname/:stockName', stockMgmtController.getStockByName);
+router.get('/stockticker/:stockTicker', stockMgmtController.getStockByTicker);
 
-// module.exports = Router;
+router.post('/createstock', stockMgmtController.createStock);
+
+export = router;

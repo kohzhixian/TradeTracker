@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { config } from "./src/config/config";
 import userRoutes from "./src/api/routes/user-routes";
 import refreshTokenRoutes from "./src/api/routes/refreshToken-routes";
+import stockMgmtRoutes from "./src/api/routes/stock-mgmt-routes";
 
 const app = express();
 app.use(express.json());
@@ -31,5 +32,5 @@ mongoose
 
 
 // app.use('/api/trades', trademgmtRoutes);
-// app.use('/api/stocks', stockMgmtRoutes);
+app.use('/api/stocks', stockMgmtRoutes);
 app.use('/api/refreshtoken', refreshTokenRoutes);
