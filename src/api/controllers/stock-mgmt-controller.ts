@@ -1,6 +1,7 @@
-const stockMgmtService = require("../services/stock-mgmt-service");
+import { RequestHandler } from "express";
+import stockMgmtService from "../services/stock-mgmt-service";
 
-const getAllStocks = async (req, res, next) => {
+const getAllStocks: RequestHandler = async (req, res, next) => {
   try {
     const stocks = await stockMgmtService.getAllStocks();
     res.json({ stocks: stocks });
@@ -9,7 +10,7 @@ const getAllStocks = async (req, res, next) => {
   }
 };
 
-const getStockByName = async (req, res, next) => {
+const getStockByName: RequestHandler = async (req, res, next) => {
   const stockName = req.params.stockName;
   try {
     const stock = await stockMgmtService.getStockByName(stockName);
@@ -19,17 +20,17 @@ const getStockByName = async (req, res, next) => {
   }
 };
 
-const getStockBySymbol = async (req, res, next) => {
-  const stockSymbol = req.params.stockSymbol;
+const getStockByTicker: RequestHandler = async (req, res, next) => {
+  const stockTicker = req.params.stockTicker;
   try {
-    const stock = await stockMgmtService.getStockBySymbol(stockSymbol);
+    const stock = await stockMgmtService.getStockByTicker(stockTicker);
     res.json({ stock: stock });
   } catch (err) {
     next(err);
   }
 };
 
-const createStock = async (req, res, next) => {
+const createStock: RequestHandler = async (req, res, next) => {
   const {
     ticker,
     name,
@@ -66,9 +67,4 @@ const createStock = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getAllStocks,
-  getStockByName,
-  getStockBySymbol,
-  createStock,
-};
+export default { getAllStocks, getStockByTicker, getStockByName, createStock };

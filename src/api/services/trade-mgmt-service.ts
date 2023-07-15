@@ -1,4 +1,4 @@
-const trademgmtSchema = require('../models/trade-mgmt-model');
+import trademgmtSchema from '../models/trade-mgmt-model';
 
 const getAllTrades = async () => {
     try{
@@ -9,16 +9,16 @@ const getAllTrades = async () => {
     }
 }
 
-const getTradeByTradeId = async (tradeId) => {
+const getTradeByTradeId = async (tradeId:string) => {
     try{
         const trades = await trademgmtSchema.findOne({_id: tradeId});
         return trades;
     }catch(err){
-        throw new Error('No trades found');
+        throw new Error('No trades found'); 
     }
 }
 
-const getTradeByUserId = async (userId) => {
+const getTradeByUserId = async (userId:string) => {
     try{
         const trades = await trademgmtSchema.find({userId: userId}).populate({
             path: 'stockId',
@@ -30,7 +30,7 @@ const getTradeByUserId = async (userId) => {
     }
 }
 
-const updateTrade = async (tradeId, volume) => {
+const updateTrade = async (tradeId:string, volume:number) => {
     let existingTrade;
     try{
         existingTrade = await trademgmtSchema.findOne({_id: tradeId});
@@ -50,9 +50,4 @@ const updateTrade = async (tradeId, volume) => {
     }
 }
 
-module.exports = {
-    getAllTrades,
-    getTradeByTradeId,
-    getTradeByUserId,
-    updateTrade
-}
+export default {getAllTrades, getTradeByTradeId, getTradeByUserId, updateTrade};

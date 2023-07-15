@@ -1,6 +1,7 @@
-const trademgmtService = require("../services/trade-mgmt-service");
+import { RequestHandler } from "express";
+import trademgmtService from "../services/trade-mgmt-service";
 
-const getAllTrades = async (req, res, next) => {
+const getAllTrades: RequestHandler = async (req, res, next) => {
   try {
     const trades = await trademgmtService.getAllTrades();
     res.json({ trades: trades });
@@ -9,7 +10,7 @@ const getAllTrades = async (req, res, next) => {
   }
 };
 
-const getTradeByTradeId = async (req, res, next) => {
+const getTradeByTradeId: RequestHandler = async (req, res, next) => {
   const tradeId = req.params.tradeId;
   try {
     const trades = await trademgmtService.getTradeByTradeId(tradeId);
@@ -19,7 +20,7 @@ const getTradeByTradeId = async (req, res, next) => {
   }
 };
 
-const getTradeByUserId = async (req, res, next) => {
+const getTradeByUserId: RequestHandler = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     const trades = await trademgmtService.getTradeByUserId(userId);
@@ -29,7 +30,7 @@ const getTradeByUserId = async (req, res, next) => {
   }
 };
 
-const updateTrade = async (req, res, next) => {
+const updateTrade: RequestHandler = async (req, res, next) => {
   const tradeId = req.params.tradeId;
   const { volume } = req.body;
   try {
@@ -40,9 +41,4 @@ const updateTrade = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getAllTrades,
-  getTradeByTradeId,
-  getTradeByUserId,
-  updateTrade,
-};
+export default {getAllTrades, getTradeByTradeId, getTradeByUserId, updateTrade};

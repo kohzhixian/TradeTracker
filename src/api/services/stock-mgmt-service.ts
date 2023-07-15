@@ -1,4 +1,4 @@
-const stockMgmtSchema = require("../models/stock-mgmt-model");
+import stockMgmtSchema from "../models/stock-mgmt-model";
 
 const getAllStocks = async () => {
   try {
@@ -9,7 +9,7 @@ const getAllStocks = async () => {
   }
 };
 
-const getStockByName = async (stockName) => {
+const getStockByName = async (stockName: string) => {
   try {
     const stock = await stockMgmtSchema.find({ name: stockName });
     return stock;
@@ -18,7 +18,7 @@ const getStockByName = async (stockName) => {
   }
 };
 
-const getStockBySymbol = async (stockSymbol) => {
+const getStockByTicker = async (stockSymbol: string) => {
   stockSymbol = stockSymbol.toUpperCase();
   try {
     const stock = await stockMgmtSchema.find({ ticker: stockSymbol });
@@ -29,18 +29,18 @@ const getStockBySymbol = async (stockSymbol) => {
 };
 
 const createStock = async (
-  ticker,
-  name,
-  sector,
-  industry,
-  currentPrice,
-  dailyHigh,
-  dailyLow,
-  volume,
-  averageVolume,
-  marketCap,
-  description,
-  country
+  ticker: string,
+  name: string,
+  sector: string,
+  industry: string,
+  currentPrice: number,
+  dailyHigh: number,
+  dailyLow: number,
+  volume: number,
+  averageVolume: number,
+  marketCap: number,
+  description: string,
+  country: string
 ) => {
   let exisitngStock;
   try {
@@ -65,21 +65,14 @@ const createStock = async (
     averageVolume,
     marketCap,
     description,
-    country
+    country,
   });
 
-  try{
+  try {
     await newStock.save();
-  }catch(err){
-    throw new Error('Failed to create new stock');
+  } catch (err) {
+    throw new Error("Failed to create new stock");
   }
 };
 
-
-
-module.exports = {
-  getAllStocks,
-  getStockByName,
-  getStockBySymbol,
-  createStock,
-};
+export default { getAllStocks, getStockByTicker, getStockByName, createStock };
