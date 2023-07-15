@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import User from "../models/user-model";
 import RefreshToken from "../models/refreshToken-model";
 import dotenv from "dotenv";
@@ -68,7 +67,7 @@ const login = async (email: string, password: string) => {
     throw new Error("Token creation failed");
   }
 
-  let decodedToken:JwtPayload;
+  let decodedToken: JwtPayload;
   try {
     decodedToken = jwt.verify(token, tokenPassword) as JwtPayload;
   } catch (err) {
@@ -137,26 +136,14 @@ const createUser = async (
   } catch (err) {
     throw new Error("Failed to create user");
   }
-
-  // const tokenData = {
-  //   name: createUser.firstName + createUser.lastName,
-  //   email: createUser.email,
-  // };
-  // let token;
-  // try {
-  //   token = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
-  // } catch (err) {
-  //   throw new Error("Token creation failed");
-  // }
-  // const tokenResponse = {
-  //   ...tokenData,
-  //   token: token
-  // }
-
-  // return tokenResponse;
 };
 
-const updateUser = async (userId:string, username:string, email:string, password:string) => {
+const updateUser = async (
+  userId: string,
+  username: string,
+  email: string,
+  password: string
+) => {
   let existingUser;
   try {
     existingUser = await User.findById(userId);
@@ -164,7 +151,7 @@ const updateUser = async (userId:string, username:string, email:string, password
     throw new Error("No user found");
   }
 
-  if (!existingUser || existingUser.isDeleted === 'Yes') {
+  if (!existingUser || existingUser.isDeleted === "Yes") {
     throw new Error("No user found");
   }
 
@@ -185,7 +172,7 @@ const updateUser = async (userId:string, username:string, email:string, password
   }
 };
 
-const deleteUser = async (userId:string) => {
+const deleteUser = async (userId: string) => {
   let existingUser;
   try {
     existingUser = await User.findById(userId);
@@ -206,4 +193,11 @@ const deleteUser = async (userId:string) => {
   }
 };
 
-export default { getAllUsers, getUserById, login, createUser, updateUser, deleteUser };
+export default {
+  getAllUsers,
+  getUserById,
+  login,
+  createUser,
+  updateUser,
+  deleteUser,
+};
