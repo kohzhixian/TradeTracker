@@ -57,7 +57,8 @@ const login = async (email: string, password: string) => {
   }
 
   const tokenData = {
-    name: existingUser.firstName + existingUser.lastName,
+    firstName: existingUser.firstName,
+    lastName: existingUser.lastName,
     email: existingUser.email,
   };
   let token;
