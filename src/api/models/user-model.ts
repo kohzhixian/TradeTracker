@@ -20,6 +20,7 @@ const userSchema: Schema = new Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true, //makes the email value lowercase
     },
     firstName: {
       type: String,
