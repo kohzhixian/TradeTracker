@@ -8,7 +8,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   password: string;
-  isDeleted: string;
+  isDeleted: boolean;
   profileImage: string;
 }
 
@@ -35,7 +35,7 @@ const userSchema: Schema = new Schema(
       minlength: 8,
     },
     isDeleted: {
-      type: String,
+      type: Boolean,
       required: true,
     },
     profileImage: {

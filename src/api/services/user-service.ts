@@ -22,7 +22,7 @@ const getUserById = async (userId: string) => {
   let existingUser;
   try {
     existingUser = await User.findById(userId).select("-password");
-    if (!existingUser || existingUser.isDeleted === "Yes") {
+    if (!existingUser || existingUser.isDeleted) {
       throw new Error("No user found with userId");
     } else {
       return existingUser;
@@ -41,7 +41,7 @@ const login = async (email: string, password: string) => {
     throw new Error("Login failed, Please try again");
   }
 
-  if (!existingUser || existingUser.isDeleted === "Yes") {
+  if (!existingUser || existingUser.isDeleted) {
     throw new Error("User does not exist");
   }
 
@@ -91,8 +91,10 @@ const login = async (email: string, password: string) => {
 
   const tokenResponse = {
     ...tokenData,
-    token: token,
+    token: token
   };
+
+  
 
   return tokenResponse;
 };
@@ -122,7 +124,7 @@ const createUser = async (
     throw new Error("Could not create user");
   }
 
-  let isDeleted = "No";
+  let isDeleted = false;
 
   const createUser = new User({
     email,
@@ -152,7 +154,7 @@ const updateUser = async (
     throw new Error("No user found");
   }
 
-  if (!existingUser || existingUser.isDeleted === "Yes") {
+  if (!existingUser || existingUser.isDeleted) {
     throw new Error("No user found");
   }
 
@@ -185,7 +187,7 @@ const deleteUser = async (userId: string) => {
     throw new Error("No user to delete");
   }
 
-  existingUser.isDeleted = "Yes";
+  existingUser.isDeleted = true;
 
   try {
     await existingUser.save();
