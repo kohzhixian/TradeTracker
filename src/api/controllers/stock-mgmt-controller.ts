@@ -2,13 +2,33 @@ import { RequestHandler } from "express";
 import stockMgmtService from "../services/stock-mgmt-service";
 
 const getAllStocks: RequestHandler = async (req, res, next) => {
+  const {pageSize, offSet} = req.body;
   try {
-    const stocks = await stockMgmtService.getAllStocks();
+    const stocks = await stockMgmtService.getAllStocks(pageSize, offSet);
     res.json({ stocks: stocks });
   } catch (err) {
     next(err);
   }
 };
+const getStockById:RequestHandler = async(req, res, next) => {
+  const stockId = req.params.stockId;
+  try{
+    const stock = await stockMgmtService.getStockById(stockId);
+    res.json({stock: stock});
+  }catch(err){
+    next(err);
+  }
+}
+
+const searchStock:RequestHandler = async(req, res, next) => {
+  const searchOption = req.params.searchOption;
+  try{
+    const stock = await stockMgmtService.searchStock(searchOption);
+    res.json({stock: stock});
+  }catch(err){
+    next(err);
+  }
+}
 
 const getStockByName: RequestHandler = async (req, res, next) => {
   const stockName = req.params.stockName;
@@ -67,4 +87,4 @@ const createStock: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { getAllStocks, getStockByTicker, getStockByName, createStock };
+export default { getAllStocks, getStockById, createStock, searchStock, getStockByName, getStockByTicker  };

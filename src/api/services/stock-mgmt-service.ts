@@ -1,11 +1,46 @@
 import stockMgmtSchema from "../models/stock-mgmt-model";
 
-const getAllStocks = async () => {
+const getAllStocks = async (pageSize: number, offSet: number) => {
+  offSet = (offSet - 1) * pageSize;
   try {
-    const stocks = await stockMgmtSchema.find();
+    const stocks = await stockMgmtSchema
+      .find()
+      .limit(pageSize)
+      .skip(offSet)
+      .select("-_id ticker name sector industry marketCap")
+      .exec();
     return stocks;
   } catch (err) {
     throw new Error("No stocks found");
+  }
+};
+
+const getStockById = async (stockId: string) => {
+  try {
+    const stock = await stockMgmtSchema.findOne({ _id: stockId });
+    return stock;
+  } catch (err) {
+    throw new Error("No stock found");
+  }
+};
+
+const searchStock = async (searchOption: string) => {
+  try {
+    const stockByName = await stockMgmtSchema.find({
+      name: new RegExp(searchOption, "i"),
+    });
+    const stockByTicker = await stockMgmtSchema.find({
+      ticker: new RegExp(searchOption, "i"),
+    });
+
+    const stocks = [...stockByName, ...stockByTicker];
+    const uniqueStocks = stocks.filter(
+      (item, index, array) =>
+        array.findIndex((obj) => obj.name === item.name) === index
+    );
+    return uniqueStocks;
+  } catch (err) {
+    throw new Error("No stock found");
   }
 };
 
@@ -75,4 +110,4 @@ const createStock = async (
   }
 };
 
-export default { getAllStocks, getStockByTicker, getStockByName, createStock };
+export default { getAllStocks, getStockById, createStock, searchStock, getStockByName, getStockByTicker };
