@@ -34,6 +34,8 @@ const getUserById = async (userId: string) => {
 
 const login = async (email: string, password: string) => {
   const tokenPassword = String(process.env.tokenPassword);
+  const refreshTokenPassword = String(process.env.refreshTokenPassword);
+
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
@@ -61,40 +63,52 @@ const login = async (email: string, password: string) => {
     lastName: existingUser.lastName,
     email: existingUser.email,
   };
-  let token;
+  let accessToken;
   try {
-    token = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
+    accessToken = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
   } catch (err) {
     throw new Error("Token creation failed");
   }
 
-  let decodedToken: JwtPayload;
+  let refreshToken;
   try {
-    decodedToken = jwt.verify(token, tokenPassword) as JwtPayload;
+    refreshToken = jwt.sign(tokenData, refreshTokenPassword, {
+      expiresIn: "7d",
+    });
+  } catch (err) {
+    throw new Error("Token creation failed");
+  }
+
+  let decodedRefreshToken;
+  try {
+    decodedRefreshToken = jwt.verify(
+      refreshToken,
+      refreshTokenPassword
+    ) as JwtPayload;
   } catch (err) {
     throw new Error("Failed to verify token");
   }
-  let userId = existingUser._id;
 
+  const userId = existingUser._id;
   const newRefreshToken = new RefreshToken({
     userId,
-    token,
-    created_at: decodedToken.iat,
-    expires_at: decodedToken.exp,
+    token: refreshToken,
+    created_at: decodedRefreshToken.iat,
+    expires_at: decodedRefreshToken.exp,
   });
 
   try {
     await newRefreshToken.save();
   } catch (err) {
-    throw new Error("Failed to save token");
+    console.error("Error saving refresToken", err);
+    throw new Error("Failed to save refreshtoken");
   }
 
   const tokenResponse = {
     ...tokenData,
-    token: token
+    accessToken: accessToken,
+    refresToken: refreshToken,
   };
-
-  
 
   return tokenResponse;
 };

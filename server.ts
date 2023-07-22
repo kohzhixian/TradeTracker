@@ -44,6 +44,7 @@ app.use((req, res, next) => {
 });
 
 mongoose
+  // .set("debug", true)
   .connect(config.mongo.url, { retryWrites: true, w: "majority" })
   .then(() => {
     app.listen(config.server.port, () => {
