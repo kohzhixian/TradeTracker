@@ -31,13 +31,14 @@ const login:RequestHandler = async (req, res, next) => {
 };
 
 const createUser:RequestHandler = async (req, res, next) => {
-  const { email, firstName, lastName, password } = req.body;
+  const { email, firstName, lastName, password, profileImage } = req.body;
   try {
     const newUser = await userService.createUser(
       email,
       firstName,
       lastName,
-      password
+      password,
+      profileImage
     );
     res.status(201).json({ message: 'User created'});
   } catch (err) {

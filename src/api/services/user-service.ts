@@ -104,10 +104,12 @@ const login = async (email: string, password: string) => {
     throw new Error("Failed to save refreshtoken");
   }
 
+  let profileImage = existingUser.profileImage;
   const tokenResponse = {
     ...tokenData,
     accessToken: accessToken,
     refresToken: refreshToken,
+    profileImage: profileImage
   };
 
   return tokenResponse;
@@ -117,7 +119,8 @@ const createUser = async (
   email: string,
   firstName: string,
   lastName: string,
-  password: string
+  password: string,
+  profileImage: string
 ) => {
   const tokenPassword = process.env.tokenPassword;
   let existingUser;
@@ -140,12 +143,17 @@ const createUser = async (
 
   let isDeleted = false;
 
+  if (profileImage == "") {
+    profileImage = "default-image.jpg";
+  }
+
   const createUser = new User({
     email,
     firstName,
     lastName,
     password: hashPassword,
     isDeleted,
+    profileImage,
   });
 
   try {

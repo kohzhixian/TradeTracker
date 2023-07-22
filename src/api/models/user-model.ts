@@ -1,7 +1,7 @@
 // const mongoose = require('mongoose');
 // const uniqueValidator = require('mongoose-unique-validator');
 import { Schema, model, Document } from "mongoose";
-import uniqueValidator from 'mongoose-unique-validator';
+import uniqueValidator from "mongoose-unique-validator";
 
 export interface IUser {
   email: string;
@@ -12,7 +12,7 @@ export interface IUser {
   profileImage: string;
 }
 
-export interface IUserModel extends IUser, Document {};
+export interface IUserModel extends IUser, Document {}
 
 const userSchema: Schema = new Schema(
   {
@@ -50,5 +50,4 @@ const userSchema: Schema = new Schema(
 userSchema.plugin(uniqueValidator);
 
 //avoid pluralization complexity
-// module.exports = mongoose.model("User", userSchema, "User");
-export default model<IUserModel>('User', userSchema, 'User');
+export default model<IUserModel>("User", userSchema, "User");
