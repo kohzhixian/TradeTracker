@@ -13,8 +13,11 @@ app.use(express.json());
 
 // Handle CORS
 // Create a whitelist of allowed origins
-dotenv.config({ path: ".env.dev" });
-const whitelist = process.env.CORS_WHITELIST!.split(",");
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: '.env.dev' });
+}
+const whitelist = process.env.CORS_WHITELIST!.split(',');
+
 
 // Set up CORS middleware to check incoming requests against the whitelist
 const corsOptions = {
@@ -22,7 +25,7 @@ const corsOptions = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void
   ) {
-    if (whitelist && origin && whitelist.indexOf(origin) !== -1) {
+    if ((whitelist && origin && whitelist.indexOf(origin) !== -1)  || !origin) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));

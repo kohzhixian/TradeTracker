@@ -5,8 +5,11 @@
   "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && nodemon dist/server.js",
-    "dev": "nodemon --exec ts-node server.ts"
+    "start": "tsc && nodemon dist/index.js",
+    "build": "rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
+    "dev": "nodemon --exec ts-node index.ts"
   },
   "repository": {
     "type": "git",
