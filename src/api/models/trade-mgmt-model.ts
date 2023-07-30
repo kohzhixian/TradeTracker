@@ -6,12 +6,15 @@ import { IStocks } from "./stock-mgmt-model";
 export interface ITrades {
   userId: Types.ObjectId | IUser;
   stockId: Types.ObjectId | IStocks;
+  tradeId: string;
   volume: number;
   price_per_share: number;
   total_purchase: number;
   exit_price: number;
   total_sell_price: number;
   earnings: number;
+  entry_date: Date;
+  exit_date: Date|null;
 }
 
 export interface ITradesMgmtModel extends ITrades, Document {}
@@ -26,6 +29,10 @@ const TradesMgmtSchema = new Schema(
     stockId: {
       type: Types.ObjectId,
       ref: "Stockmanagement",
+      required: true,
+    },
+    tradeId: {
+      type: String,
       required: true,
     },
     volume: {
@@ -52,6 +59,13 @@ const TradesMgmtSchema = new Schema(
       type: Number,
       required: true,
     },
+    entry_date: {
+      type: Date,
+      required: true
+    },
+    exit_date: {
+      type: Date
+    }
   },
   { validateBeforeSave: true }
 );

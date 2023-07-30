@@ -1,5 +1,3 @@
-// const mongoose = require('mongoose');
-// const uniqueValidator = require('mongoose-unique-validator');
 import { Schema, model, Document } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 
@@ -10,6 +8,7 @@ export interface IUser {
   password: string;
   isDeleted: boolean;
   profileImage: string;
+  companyCode: string;
 }
 
 export interface IUserModel extends IUser, Document {}
@@ -42,8 +41,12 @@ const userSchema: Schema = new Schema(
     profileImage: {
       type: String,
     },
-    //Enable schmea validation
+    companyCode: {
+      type: String,
+      required: true,
+    },
   },
+  //Enable schmea validation
   { validateBeforeSave: true }
 );
 
