@@ -15,14 +15,14 @@ const getAllStocks = async (pageSize: number, offSet: number) => {
   }
 };
 
-const getStockById = async (stockId: string) => {
-  try {
-    const stock = await stockMgmtSchema.findOne({ _id: stockId });
-    return stock;
-  } catch (err) {
-    throw new Error("No stock found");
-  }
-};
+// const getStockById = async (stockId: string) => {
+//   try {
+//     const stock = await stockMgmtSchema.findOne({ _id: stockId });
+//     return stock;
+//   } catch (err) {
+//     throw new Error("No stock found");
+//   }
+// };
 
 const searchStock = async (searchOption: string) => {
   try {
@@ -44,14 +44,14 @@ const searchStock = async (searchOption: string) => {
   }
 };
 
-const getStockByName = async (stockName: string) => {
-  try {
-    const stock = await stockMgmtSchema.find({ name: stockName });
-    return stock;
-  } catch (err) {
-    throw new Error("No stock found with stock name");
-  }
-};
+// const getStockByName = async (stockName: string) => {
+//   try {
+//     const stock = await stockMgmtSchema.find({ name: stockName });
+//     return stock;
+//   } catch (err) {
+//     throw new Error("No stock found with stock name");
+//   }
+// };
 
 const getStockByTicker = async (stockSymbol: string) => {
   stockSymbol = stockSymbol.toUpperCase();
@@ -110,4 +110,4 @@ const createStock = async (
   }
 };
 
-export default { getAllStocks, getStockById, createStock, searchStock, getStockByName, getStockByTicker };
+export default { getAllStocks, createStock, searchStock, getStockByTicker };

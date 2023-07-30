@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import stockMgmtService from "../services/stock-mgmt-service";
 
 const getAllStocks: RequestHandler = async (req, res, next) => {
-  const {pageSize, offSet} = req.body;
+  const { pageSize, offSet } = req.body;
   try {
     const stocks = await stockMgmtService.getAllStocks(pageSize, offSet);
     res.json({ stocks: stocks });
@@ -10,35 +10,35 @@ const getAllStocks: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
-const getStockById:RequestHandler = async(req, res, next) => {
-  const stockId = req.params.stockId;
-  try{
-    const stock = await stockMgmtService.getStockById(stockId);
-    res.json({stock: stock});
-  }catch(err){
-    next(err);
-  }
-}
+// const getStockById:RequestHandler = async(req, res, next) => {
+//   const stockId = req.params.stockId;
+//   try{
+//     const stock = await stockMgmtService.getStockById(stockId);
+//     res.json({stock: stock});
+//   }catch(err){
+//     next(err);
+//   }
+// }
 
-const searchStock:RequestHandler = async(req, res, next) => {
+const searchStock: RequestHandler = async (req, res, next) => {
   const searchOption = req.params.searchOption;
-  try{
-    const stock = await stockMgmtService.searchStock(searchOption);
-    res.json({stock: stock});
-  }catch(err){
-    next(err);
-  }
-}
-
-const getStockByName: RequestHandler = async (req, res, next) => {
-  const stockName = req.params.stockName;
   try {
-    const stock = await stockMgmtService.getStockByName(stockName);
+    const stock = await stockMgmtService.searchStock(searchOption);
     res.json({ stock: stock });
   } catch (err) {
     next(err);
   }
 };
+
+// const getStockByName: RequestHandler = async (req, res, next) => {
+//   const stockName = req.params.stockName;
+//   try {
+//     const stock = await stockMgmtService.getStockByName(stockName);
+//     res.json({ stock: stock });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 const getStockByTicker: RequestHandler = async (req, res, next) => {
   const stockTicker = req.params.stockTicker;
@@ -87,4 +87,4 @@ const createStock: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { getAllStocks, getStockById, createStock, searchStock, getStockByName, getStockByTicker  };
+export default { getAllStocks, createStock, searchStock, getStockByTicker };
