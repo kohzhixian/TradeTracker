@@ -43,7 +43,6 @@ const userSchema: Schema = new Schema(
     },
     companyCode: {
       type: String,
-      required: true,
     },
   },
   //Enable schmea validation

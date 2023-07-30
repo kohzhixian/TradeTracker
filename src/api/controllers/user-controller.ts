@@ -49,8 +49,7 @@ const register: RequestHandler = async (req, res, next) => {
 };
 
 const updateProfile: RequestHandler = async (req, res, next) => {
-  const userId = req.params.userId;
-  const { firstName, lastName, email } = req.body;
+  const { userId, firstName, lastName, email } = req.body;
   try {
     await userService.updateProfile(userId, firstName, lastName, email);
     res.json({ Message: "Update successful" });
@@ -59,8 +58,18 @@ const updateProfile: RequestHandler = async (req, res, next) => {
   }
 };
 
+const updatePassword: RequestHandler = async (req, res, next) => {
+  const { userId, currentPassword, newPassword } = req.body;
+  try {
+    await userService.updatePassword(userId, currentPassword, newPassword);
+    res.json({ message: "update password successful" });
+  } catch (err) {
+    throw new Error("Failed to update password");
+  }
+};
+
 const deactivateAccount: RequestHandler = async (req, res, next) => {
-  const userId = req.params.userId;
+  const { userId } = req.body;
   try {
     await userService.deactivateAccount(userId);
     res.json({ Message: "Delete successful" });
@@ -75,5 +84,6 @@ export default {
   login,
   register,
   updateProfile,
+  updatePassword,
   deactivateAccount,
 };

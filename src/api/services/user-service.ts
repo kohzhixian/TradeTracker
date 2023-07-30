@@ -196,6 +196,37 @@ const updateProfile = async (
   }
 };
 
+const updatePassword = async (
+  userId: string,
+  currentPassword: string,
+  newPassword: string
+) => {
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ _id: userId });
+
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    const isCurrentPassword = await bcrypt.compare(
+      currentPassword,
+      existingUser.password
+    );
+
+    if (!isCurrentPassword) {
+      throw new Error("Current Password is wrong");
+    }
+
+    let hashedNewPassword = await bcrypt.hash(newPassword, 12);
+    existingUser.password = hashedNewPassword;
+
+    await existingUser.save();
+  } catch (err) {
+    throw new Error("No user found, Please try again");
+  }
+};
+
 const deactivateAccount = async (userId: string) => {
   let existingUser;
   try {
@@ -203,7 +234,6 @@ const deactivateAccount = async (userId: string) => {
   } catch (err) {
     throw new Error("Delete User failed!");
   }
-
   if (!existingUser) {
     throw new Error("No user to delete");
   }
@@ -223,5 +253,6 @@ export default {
   login,
   register,
   updateProfile,
+  updatePassword,
   deactivateAccount,
 };
