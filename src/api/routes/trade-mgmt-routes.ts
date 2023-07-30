@@ -3,10 +3,12 @@ import tradeMgmtController from "../controllers/trade-mgmt-controller";
 
 const router = express.Router();
 
-router.get('/user/:userId', tradeMgmtController.getTradeByUserId);
-router.get('/:tradeId', tradeMgmtController.getTradeByTradeId);
-router.get('/', tradeMgmtController.getAllTrades);
+router.post('/:userId/:stockId', tradeMgmtController.createTrade);
 
-router.patch('/updatetrade/:tradeId', tradeMgmtController.updateTrade);
+router.get('/', tradeMgmtController.getAllTrades);
+router.get('/:tradeId', tradeMgmtController.getTradeById);
+router.get('/ticker/:ticker', tradeMgmtController.getTradeByTicker);
+
+// router.patch('/updatetrade/:tradeId', tradeMgmtController.updateTrade);
 
 export = router;

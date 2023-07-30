@@ -109,18 +109,19 @@ const login = async (email: string, password: string) => {
     ...tokenData,
     accessToken: accessToken,
     refresToken: refreshToken,
-    profileImage: profileImage
+    profileImage: profileImage,
   };
 
   return tokenResponse;
 };
 
-const createUser = async (
+const register = async (
   email: string,
   firstName: string,
   lastName: string,
   password: string,
-  profileImage: string
+  profileImage: string,
+  companyCode: string
 ) => {
   const tokenPassword = process.env.tokenPassword;
   let existingUser;
@@ -147,6 +148,9 @@ const createUser = async (
     profileImage = "default-image.jpg";
   }
 
+  if (companyCode !== "ABC") {
+    throw new Error("Invalid Company Code");
+  }
   const createUser = new User({
     email,
     firstName,
@@ -154,6 +158,7 @@ const createUser = async (
     password: hashPassword,
     isDeleted,
     profileImage,
+    companyCode,
   });
 
   try {
@@ -163,11 +168,11 @@ const createUser = async (
   }
 };
 
-const updateUser = async (
+const updateProfile = async (
   userId: string,
-  username: string,
-  email: string,
-  password: string
+  firstName: string,
+  lastName: string,
+  email: string
 ) => {
   let existingUser;
   try {
@@ -180,15 +185,9 @@ const updateUser = async (
     throw new Error("No user found");
   }
 
-  let hashPassword;
-  try {
-    hashPassword = await bcrypt.hash(password, 12);
-  } catch (err) {
-    throw new Error("Hashing of password failed");
-  }
-
+  existingUser.firstName = firstName;
+  existingUser.lastName = lastName;
   existingUser.email = email;
-  existingUser.password = hashPassword;
 
   try {
     await existingUser.save();
@@ -197,7 +196,7 @@ const updateUser = async (
   }
 };
 
-const deleteUser = async (userId: string) => {
+const deactivateAccount = async (userId: string) => {
   let existingUser;
   try {
     existingUser = await User.findById(userId);
@@ -222,7 +221,7 @@ export default {
   getAllUsers,
   getUserById,
   login,
-  createUser,
-  updateUser,
-  deleteUser,
+  register,
+  updateProfile,
+  deactivateAccount,
 };
