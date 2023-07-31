@@ -30,7 +30,7 @@ export interface AggregateResult {
   entryDate: Date;
 }
 
-export interface IIStockHoldingsModel extends IStockHoldings, Document {}
+export interface IStockHoldingsModel extends IStockHoldings, Document {}
 
 const StockHoldingsSchema = new Schema(
   {
@@ -80,7 +80,7 @@ const StockHoldingsSchema = new Schema(
 );
 StockHoldingsSchema.plugin(uniqueValidator);
 
-export default model<IIStockHoldingsModel>(
+export default model<IStockHoldingsModel>(
   "stockholdings",
   StockHoldingsSchema,
   "stockholdings"

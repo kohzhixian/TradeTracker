@@ -1,7 +1,6 @@
 import stockHoldingsSchema, {
   AggregateResult,
-  IIStockHoldingsModel,
-  IStockHoldings,
+  IStockHoldingsModel,
   StockPurchaseTransaction,
 } from "../models/stockholdings-model";
 import { getFormattedDate, getFormattedNumber } from "../../utils/date-utils";
@@ -96,7 +95,7 @@ const createTrade = async (
   //Create new Trade
   const tickerExist = (await stockHoldingsSchema.findOne({
     ticker: ticker,
-  })) as IIStockHoldingsModel;
+  })) as IStockHoldingsModel;
   if (tickerExist) {
     tickerExist.purchaseTransaction.push(newStockPurchaseTransaction);
     await tickerExist.save();
@@ -186,24 +185,3 @@ export default {
   // getTradeByTicker,
 };
 
-// {
-//   $unwind: "$purchaseTransaction",
-// },
-// {
-//   $match: {
-//     "purchaseTransaction.entryTransactionID": new RegExp(
-//       `^TXN${currentEntryDate}`
-//     ),
-//   },
-// },
-// {
-//   $group: {
-//     _id: "$_id",
-//     userId: { $first: "$userId" },
-//     action: { $first: "$action" },
-//     ticker: { $first: "$ticker" },
-//     stockOnHand: { $first: "$stockOnHand" },
-//     stockAveragePrice: { $first: "$stockAveragePrice" },
-//     purchaseTransaction: { $push: "$purchaseTransaction" },
-//   },
-// },
