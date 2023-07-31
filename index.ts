@@ -4,7 +4,7 @@ import { config } from "./src/config/config";
 import userRoutes from "./src/api/routes/user-routes";
 import refreshTokenRoutes from "./src/api/routes/refreshToken-routes";
 import stockMgmtRoutes from "./src/api/routes/stock-mgmt-routes";
-import tradeMgmtRoutes from "./src/api/routes/trade-mgmt-routes";
+import tradeMgmtRoutes from "./src/api/routes/stockHoldings-routes";
 import cors from "cors";
 import dotenv from "dotenv";
 
