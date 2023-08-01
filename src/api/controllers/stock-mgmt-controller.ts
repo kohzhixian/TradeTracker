@@ -10,15 +10,6 @@ const getAllStocks: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
-// const getStockById:RequestHandler = async(req, res, next) => {
-//   const stockId = req.params.stockId;
-//   try{
-//     const stock = await stockMgmtService.getStockById(stockId);
-//     res.json({stock: stock});
-//   }catch(err){
-//     next(err);
-//   }
-// }
 
 const searchStock: RequestHandler = async (req, res, next) => {
   const searchOption = req.params.searchOption;
@@ -30,15 +21,6 @@ const searchStock: RequestHandler = async (req, res, next) => {
   }
 };
 
-// const getStockByName: RequestHandler = async (req, res, next) => {
-//   const stockName = req.params.stockName;
-//   try {
-//     const stock = await stockMgmtService.getStockByName(stockName);
-//     res.json({ stock: stock });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 
 const getStockByTicker: RequestHandler = async (req, res, next) => {
   const stockTicker = req.params.stockTicker;

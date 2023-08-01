@@ -62,7 +62,6 @@ const createTrade = async (
         },
       },
     ]);
-
   //If there are no trade entries, set sequenceNumber to 1
   let entrySequenceNumber: number;
 
