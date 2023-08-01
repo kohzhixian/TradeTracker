@@ -64,7 +64,7 @@ const updatePassword: RequestHandler = async (req, res, next) => {
     await userService.updatePassword(userId, currentPassword, newPassword);
     res.json({ message: "update password successful" });
   } catch (err) {
-    throw new Error("Failed to update password");
+    next(err);
   }
 };
 

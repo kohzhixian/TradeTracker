@@ -14,15 +14,11 @@ const createTrade = async (
   entryPrice: number
 ) => {
   //Find Existing Stock Holdings
-  let stockHoldings;
-  try {
-    stockHoldings = await stockHoldingsSchema.findOne({
-      userId: userId,
-      ticker: ticker,
-    });
-  } catch (err) {
-    throw new Error("Cannot find stock with given userId/ticker");
-  }
+  const stockHoldings = await stockHoldingsSchema.findOne({
+    userId: userId,
+    ticker: ticker,
+  });
+
   //Get Current Date in the format 'YYYMMDD'
   const entryDate = new Date();
   const currentEntryDate = getFormattedDate(entryDate);
@@ -184,4 +180,3 @@ export default {
   // getTradeById,
   // getTradeByTicker,
 };
-

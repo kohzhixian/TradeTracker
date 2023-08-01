@@ -8,27 +8,19 @@ import { JwtPayload } from "jsonwebtoken";
 dotenv.config({ path: ".env.dev" });
 
 const getAllUsers = async (condition: string) => {
-  try {
-    if (condition) {
-      return await User.find().select(condition).exec();
-    }
-    return await User.find().exec();
-  } catch (err) {
-    throw new Error("Could not retrieve users");
+  if (condition) {
+    return await User.find().select(condition).exec();
   }
+  return await User.find().exec();
 };
 
 const getUserById = async (userId: string) => {
   let existingUser;
-  try {
-    existingUser = await User.findById(userId).select("-password");
-    if (!existingUser || existingUser.isDeleted) {
-      throw new Error("No user found with userId");
-    } else {
-      return existingUser;
-    }
-  } catch (err) {
+  existingUser = await User.findById(userId).select("-password");
+  if (!existingUser || existingUser.isDeleted) {
     throw new Error("No user found with userId");
+  } else {
+    return existingUser;
   }
 };
 
@@ -36,23 +28,13 @@ const login = async (email: string, password: string) => {
   const tokenPassword = String(process.env.tokenPassword);
   const refreshTokenPassword = String(process.env.refreshTokenPassword);
 
-  let existingUser;
-  try {
-    existingUser = await User.findOne({ email: email });
-  } catch (err) {
-    throw new Error("Login failed, Please try again");
-  }
+  const existingUser = await User.findOne({ email: email });
 
   if (!existingUser || existingUser.isDeleted) {
     throw new Error("User does not exist");
   }
 
-  let isPasswordValid;
-  try {
-    isPasswordValid = await bcrypt.compare(password, existingUser.password);
-  } catch (err) {
-    throw new Error("Wrong credentials, Please try again");
-  }
+  const isPasswordValid = await bcrypt.compare(password, existingUser.password);
 
   if (!isPasswordValid) {
     throw new Error("Wrong credentials, Please try again");
@@ -63,30 +45,27 @@ const login = async (email: string, password: string) => {
     lastName: existingUser.lastName,
     email: existingUser.email,
   };
-  let accessToken;
-  try {
-    accessToken = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
-  } catch (err) {
-    throw new Error("Token creation failed");
+
+  const accessToken = jwt.sign(tokenData, tokenPassword, { expiresIn: "1h" });
+  if (!accessToken) {
+    throw new Error("Failed to sign access token");
   }
 
-  let refreshToken;
-  try {
-    refreshToken = jwt.sign(tokenData, refreshTokenPassword, {
-      expiresIn: "7d",
-    });
-  } catch (err) {
-    throw new Error("Token creation failed");
+  const refreshToken = jwt.sign(tokenData, refreshTokenPassword, {
+    expiresIn: "7d",
+  });
+
+  if (!refreshToken) {
+    throw new Error("Failed to sign refresh token");
   }
 
-  let decodedRefreshToken;
-  try {
-    decodedRefreshToken = jwt.verify(
-      refreshToken,
-      refreshTokenPassword
-    ) as JwtPayload;
-  } catch (err) {
-    throw new Error("Failed to verify token");
+  const decodedRefreshToken = jwt.verify(
+    refreshToken,
+    refreshTokenPassword
+  ) as JwtPayload;
+
+  if (!decodedRefreshToken) {
+    throw new Error("Failed to verify refresh token");
   }
 
   const userId = existingUser._id;
@@ -97,11 +76,9 @@ const login = async (email: string, password: string) => {
     expires_at: decodedRefreshToken.exp,
   });
 
-  try {
-    await newRefreshToken.save();
-  } catch (err) {
-    console.error("Error saving refresToken", err);
-    throw new Error("Failed to save refreshtoken");
+  const result = await newRefreshToken.save();
+  if (!result) {
+    throw new Error("Faield to create refresh token");
   }
 
   let profileImage = existingUser.profileImage;
@@ -123,24 +100,12 @@ const register = async (
   profileImage: string,
   companyCode: string
 ) => {
-  const tokenPassword = process.env.tokenPassword;
-  let existingUser;
-  try {
-    existingUser = await User.findOne({ email: email });
-  } catch (err) {
-    throw new Error("Failed to create user");
-  }
-
+  const existingUser = await User.findOne({ email: email });
   if (existingUser) {
     throw new Error("Email has alreay been used, Please try another email");
   }
 
-  let hashPassword;
-  try {
-    hashPassword = await bcrypt.hash(password, 12);
-  } catch (err) {
-    throw new Error("Could not create user");
-  }
+  const hashPassword = await bcrypt.hash(password, 12);
 
   let isDeleted = false;
 
@@ -161,9 +126,8 @@ const register = async (
     companyCode,
   });
 
-  try {
-    await createUser.save();
-  } catch (err) {
+  const result = await createUser.save();
+  if (!result) {
     throw new Error("Failed to create user");
   }
 };
@@ -174,12 +138,7 @@ const updateProfile = async (
   lastName: string,
   email: string
 ) => {
-  let existingUser;
-  try {
-    existingUser = await User.findById(userId);
-  } catch (err) {
-    throw new Error("No user found");
-  }
+  const existingUser = await User.findById(userId);
 
   if (!existingUser || existingUser.isDeleted) {
     throw new Error("No user found");
@@ -189,10 +148,10 @@ const updateProfile = async (
   existingUser.lastName = lastName;
   existingUser.email = email;
 
-  try {
-    await existingUser.save();
-  } catch (err) {
-    throw new Error("Update User failed");
+  const result = await existingUser.save();
+
+  if (!result) {
+    throw new Error("Failed to update Profile");
   }
 };
 
@@ -201,49 +160,43 @@ const updatePassword = async (
   currentPassword: string,
   newPassword: string
 ) => {
-  let existingUser;
-  try {
-    existingUser = await User.findOne({ _id: userId });
+  const existingUser = await User.findOne({ _id: userId });
 
-    if (!existingUser) {
-      throw new Error("User not found");
-    }
+  if (!existingUser) {
+    throw new Error("User not found");
+  }
 
-    const isCurrentPassword = await bcrypt.compare(
-      currentPassword,
-      existingUser.password
-    );
+  const isCurrentPassword = await bcrypt.compare(
+    currentPassword,
+    existingUser.password
+  );
 
-    if (!isCurrentPassword) {
-      throw new Error("Current Password is wrong");
-    }
+  if (!isCurrentPassword) {
+    throw new Error("Current Password is wrong");
+  }
 
-    let hashedNewPassword = await bcrypt.hash(newPassword, 12);
-    existingUser.password = hashedNewPassword;
+  let hashedNewPassword = await bcrypt.hash(newPassword, 12);
+  existingUser.password = hashedNewPassword;
 
-    await existingUser.save();
-  } catch (err) {
-    throw new Error("No user found, Please try again");
+  const result = await existingUser.save();
+  if (!result) {
+    throw new Error("Failed to save new password");
   }
 };
 
 const deactivateAccount = async (userId: string) => {
-  let existingUser;
-  try {
-    existingUser = await User.findById(userId);
-  } catch (err) {
-    throw new Error("Delete User failed!");
-  }
+  const existingUser = await User.findById(userId);
+
   if (!existingUser) {
     throw new Error("No user to delete");
   }
 
   existingUser.isDeleted = true;
 
-  try {
-    await existingUser.save();
-  } catch (err) {
-    throw new Error("Failed to update isDeleted");
+  const result = await existingUser.save();
+
+  if (!result) {
+    throw new Error("Failed to delete user");
   }
 };
 

@@ -13,7 +13,7 @@ const createTrade: RequestHandler = async (req, res, next) => {
     );
     res.json({ message: "stockHoldings created" });
   } catch (err) {
-    next(err);
+    throw new Error("Failed to create stockHoldings");
   }
 };
 

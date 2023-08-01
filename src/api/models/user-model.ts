@@ -20,6 +20,7 @@ const userSchema: Schema = new Schema(
       required: true,
       unique: true,
       lowercase: true, //makes the email value lowercase
+      match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, //email validation
     },
     firstName: {
       type: String,
