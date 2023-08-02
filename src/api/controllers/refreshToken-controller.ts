@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import refreshTokenService from "../services/refreshToken-service";
+import { HttpError } from "../models/http-error";
 
 const logout: RequestHandler = async (req, res, next) => {
   const { userId } = req.body;
@@ -7,7 +8,8 @@ const logout: RequestHandler = async (req, res, next) => {
     await refreshTokenService.logout(userId);
     res.json({ message: "Token Deleted" });
   } catch (err) {
-    next(err);
+    const error = new HttpError("Something went wrong, Unable to logout", 500);
+    return next(error);
   }
 };
 
@@ -16,7 +18,11 @@ const getAllRefreshTokens: RequestHandler = async (req, res, next) => {
     const result = await refreshTokenService.getAllRefreshTokens();
     res.json({ refreshTokens: result });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, could not find refreshToken",
+      500
+    );
+    return next(error);
   }
 };
 

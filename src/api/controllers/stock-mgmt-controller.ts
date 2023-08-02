@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import stockMgmtService from "../services/stock-mgmt-service";
+import { HttpError } from "../models/http-error";
 
 const getAllStocks: RequestHandler = async (req, res, next) => {
   const { pageSize, offSet } = req.body;
@@ -7,7 +8,11 @@ const getAllStocks: RequestHandler = async (req, res, next) => {
     const stocks = await stockMgmtService.getAllStocks(pageSize, offSet);
     res.json({ stocks: stocks });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, could not find stock",
+      500
+    );
+    return next(error);
   }
 };
 
@@ -17,10 +22,13 @@ const searchStock: RequestHandler = async (req, res, next) => {
     const stock = await stockMgmtService.searchStock(searchOption);
     res.json({ stock: stock });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, could not find stock",
+      500
+    );
+    return next(error);
   }
 };
-
 
 const getStockByTicker: RequestHandler = async (req, res, next) => {
   const stockTicker = req.params.stockTicker;
@@ -28,7 +36,11 @@ const getStockByTicker: RequestHandler = async (req, res, next) => {
     const stock = await stockMgmtService.getStockByTicker(stockTicker);
     res.json({ stock: stock });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, could not find stock",
+      500
+    );
+    return next(error);
   }
 };
 
@@ -65,7 +77,11 @@ const createStock: RequestHandler = async (req, res, next) => {
     );
     res.json({ message: "Stock created" });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, failed to create stock",
+      500
+    );
+    return next(error);
   }
 };
 

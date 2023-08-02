@@ -1,4 +1,5 @@
 import stockMgmtSchema from "../models/stock-mgmt-model";
+import { HttpError } from "../models/http-error";
 
 const getAllStocks = async (pageSize: number, offSet: number) => {
   offSet = (offSet - 1) * pageSize;
@@ -10,7 +11,7 @@ const getAllStocks = async (pageSize: number, offSet: number) => {
     .exec();
 
   if (!stocks) {
-    throw new Error("No stock found");
+    throw new HttpError("No stock found", 404);
   }
   return stocks;
 };
@@ -29,8 +30,8 @@ const searchStock = async (searchOption: string) => {
       array.findIndex((obj) => obj.name === item.name) === index
   );
 
-  if (!uniqueStocks || !stocks) {
-    throw new Error("No stocks found");
+  if (!uniqueStocks || stocks.length === 0) {
+    throw new HttpError("No stocks found", 404);
   }
   return uniqueStocks;
 };
@@ -39,7 +40,7 @@ const getStockByTicker = async (stockSymbol: string) => {
   stockSymbol = stockSymbol.toUpperCase();
   const stock = await stockMgmtSchema.find({ ticker: stockSymbol });
   if (!stock || stock.length === 0) {
-    throw new Error("No stock found with ticker");
+    throw new HttpError("No stock found with ticker", 404);
   }
   return stock;
 };
@@ -61,7 +62,7 @@ const createStock = async (
   const exisitngStock = await stockMgmtSchema.findOne({ name: name });
 
   if (exisitngStock) {
-    throw new Error("Stock already exists");
+    throw new HttpError("Stock already exists", 404);
   }
 
   const newStock = new stockMgmtSchema({
@@ -81,7 +82,7 @@ const createStock = async (
 
   const result = await newStock.save();
   if (!result) {
-    throw new Error("Failed to create new stock");
+    throw new HttpError("Failed to create new stock", 404);
   }
 };
 

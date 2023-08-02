@@ -1,10 +1,11 @@
 import RefreshToken from "../models/refreshToken-model";
+import { HttpError } from "../models/http-error";
 
 const logout = async (userId: string) => {
   const result = await RefreshToken.deleteMany({ userId: userId });
 
   if (result.deletedCount == 0) {
-    throw new Error("No token found for userId");
+    throw new HttpError("No token found for userId", 404);
   }
 };
 
@@ -13,7 +14,7 @@ const getAllRefreshTokens = async () => {
   const result = await RefreshToken.find();
 
   if (!result) {
-    throw new Error("No refresh token found");
+    throw new HttpError("No refresh token found", 404);
   }
   return result;
 };

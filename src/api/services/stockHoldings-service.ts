@@ -13,11 +13,6 @@ const createTrade = async (
   quantity: number,
   entryPrice: number
 ) => {
-  //Find Existing Stock Holdings
-  const stockHoldings = await stockHoldingsSchema.findOne({
-    userId: userId,
-    ticker: ticker,
-  });
 
   //Get Current Date in the format 'YYYMMDD'
   const entryDate = new Date();

@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import stockHoldingsService from "../services/stockHoldings-service";
+import { HttpError } from "../models/http-error";
 
 const createTrade: RequestHandler = async (req, res, next) => {
   const { userId, action, ticker, quantity, entryPrice } = req.body;
@@ -13,7 +14,11 @@ const createTrade: RequestHandler = async (req, res, next) => {
     );
     res.json({ message: "stockHoldings created" });
   } catch (err) {
-    throw new Error("Failed to create stockHoldings");
+    const error = new HttpError(
+      "Something went wrong, failed to create stock holdings",
+      500
+    );
+    return next(error);
   }
 };
 

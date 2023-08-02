@@ -7,17 +7,18 @@ import stockMgmtRoutes from "./src/api/routes/stock-mgmt-routes";
 import tradeMgmtRoutes from "./src/api/routes/stockHoldings-routes";
 import cors from "cors";
 import dotenv from "dotenv";
+import { Request, Response, NextFunction } from "express";
+import { HttpError } from "./src/api/models/http-error";
 
 const app = express();
 app.use(express.json());
 
 // Handle CORS
 // Create a whitelist of allowed origins
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: '.env.dev' });
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: ".env.dev" });
 }
-const whitelist = process.env.CORS_WHITELIST!.split(',');
-
+const whitelist = process.env.CORS_WHITELIST!.split(",");
 
 // Set up CORS middleware to check incoming requests against the whitelist
 const corsOptions = {
@@ -25,7 +26,7 @@ const corsOptions = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void
   ) {
-    if ((whitelist && origin && whitelist.indexOf(origin) !== -1)  || !origin) {
+    if ((whitelist && origin && whitelist.indexOf(origin) !== -1) || !origin) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -44,6 +45,16 @@ app.use((req, res, next) => {
   );
   res.setHeader("Access-Control-Allow-Mthods", "GET, POST, PATCH, DELETE");
   next();
+});
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof HttpError) {
+    res.status(err.statusCode).json({ ErrorMessage: err.message });
+  } else {
+    res
+      .status(500)
+      .json({ ErrorMessage: err.message || "Internal Server Error" });
+  }
 });
 
 mongoose

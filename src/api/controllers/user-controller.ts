@@ -1,12 +1,17 @@
 import { RequestHandler } from "express";
 import userService from "../services/user-service";
+import { HttpError } from "../models/http-error";
 
 const getAllUsers: RequestHandler = async (req, res, next) => {
   try {
     const users = await userService.getAllUsers("-password");
     res.status(200).json({ users: users });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, could not find any user",
+      500
+    );
+    return next(error);
   }
 };
 
@@ -16,7 +21,8 @@ const getUserById: RequestHandler = async (req, res, next) => {
     const user = await userService.getUserById(userId);
     res.status(200).json({ user: user });
   } catch (err) {
-    next(err);
+    const error = new HttpError("Something went wrong, could find user", 500);
+    return next(error);
   }
 };
 
@@ -26,7 +32,11 @@ const login: RequestHandler = async (req, res, next) => {
     const loginTokenData = await userService.login(email, password);
     res.json({ loginTokenData: loginTokenData });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, Failed to login",
+      500
+    );
+    return next(error);
   }
 };
 
@@ -44,7 +54,11 @@ const register: RequestHandler = async (req, res, next) => {
     );
     res.status(201).json({ message: "User created" });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, Failed to register",
+      500
+    );
+    return next(error);
   }
 };
 
@@ -54,7 +68,11 @@ const updateProfile: RequestHandler = async (req, res, next) => {
     await userService.updateProfile(userId, firstName, lastName, email);
     res.json({ Message: "Update successful" });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, Failed to update profile",
+      500
+    );
+    return next(error);
   }
 };
 
@@ -64,7 +82,11 @@ const updatePassword: RequestHandler = async (req, res, next) => {
     await userService.updatePassword(userId, currentPassword, newPassword);
     res.json({ message: "update password successful" });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, Failed to update password",
+      500
+    );
+    return next(error);
   }
 };
 
@@ -74,7 +96,11 @@ const deactivateAccount: RequestHandler = async (req, res, next) => {
     await userService.deactivateAccount(userId);
     res.json({ Message: "Delete successful" });
   } catch (err) {
-    next(err);
+    const error = new HttpError(
+      "Something went wrong, Failed to delete account",
+      500
+    );
+    return next(error);
   }
 };
 
