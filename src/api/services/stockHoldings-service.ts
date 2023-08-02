@@ -5,27 +5,27 @@ import stockHoldingsSchema, {
 } from "../models/stockholdings-model";
 import { getFormattedDate, getFormattedNumber } from "../../utils/date-utils";
 import mongoose from "mongoose";
+import { createTradeDTO } from "../../interface/stockHoldings-interface";
 
-const createTrade = async (
-  userId: string,
-  action: string,
-  ticker: string,
-  quantity: number,
-  entryPrice: number
-) => {
-
+const createTrade = async (createTradeDTO: createTradeDTO) => {
   //Get Current Date in the format 'YYYMMDD'
   const entryDate = new Date();
   const currentEntryDate = getFormattedDate(entryDate);
   const stockOnHand = 123; // calculate stockOnHand
   const stockAveragePrice = 234; // calculate stockAveragePrice
 
+  const userId = createTradeDTO.userId;
+  const action = createTradeDTO.action;
+  const ticker = createTradeDTO.ticker;
+  const quantity = createTradeDTO.quantity;
+  const entryPrice = createTradeDTO.entryPrice;
+
   //Find the last trade entry in the database
   const lastStockPurchaseTransaction: AggregateResult[] =
     await stockHoldingsSchema.aggregate([
       {
         $match: {
-          userId: new mongoose.Types.ObjectId(userId),
+          userId: new mongoose.Types.ObjectId(createTradeDTO.userId),
         },
       },
       {

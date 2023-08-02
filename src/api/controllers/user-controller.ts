@@ -1,6 +1,13 @@
 import { RequestHandler } from "express";
 import userService from "../services/user-service";
 import { HttpError } from "../models/http-error";
+import {
+  deactivateAccountDTO,
+  loginDTO,
+  registerDTO,
+  updatePasswordDTO,
+  updateProfileDTO,
+} from "../../interface/user-interface";
 
 const getAllUsers: RequestHandler = async (req, res, next) => {
   try {
@@ -27,31 +34,18 @@ const getUserById: RequestHandler = async (req, res, next) => {
 };
 
 const login: RequestHandler = async (req, res, next) => {
-  const { email, password } = req.body;
   try {
-    const loginTokenData = await userService.login(email, password);
+    const loginTokenData = await userService.login(req.body as loginDTO);
     res.json({ loginTokenData: loginTokenData });
   } catch (err) {
-    const error = new HttpError(
-      "Something went wrong, Failed to login",
-      500
-    );
+    const error = new HttpError("Something went wrong, Failed to login", 500);
     return next(error);
   }
 };
 
 const register: RequestHandler = async (req, res, next) => {
-  const { email, firstName, lastName, password, profileImage, companyCode } =
-    req.body;
   try {
-    const newUser = await userService.register(
-      email,
-      firstName,
-      lastName,
-      password,
-      profileImage,
-      companyCode
-    );
+    const newUser = await userService.register(req.body as registerDTO);
     res.status(201).json({ message: "User created" });
   } catch (err) {
     const error = new HttpError(
@@ -63,9 +57,8 @@ const register: RequestHandler = async (req, res, next) => {
 };
 
 const updateProfile: RequestHandler = async (req, res, next) => {
-  const { userId, firstName, lastName, email } = req.body;
   try {
-    await userService.updateProfile(userId, firstName, lastName, email);
+    await userService.updateProfile(req.body as updateProfileDTO);
     res.json({ Message: "Update successful" });
   } catch (err) {
     const error = new HttpError(
@@ -77,9 +70,8 @@ const updateProfile: RequestHandler = async (req, res, next) => {
 };
 
 const updatePassword: RequestHandler = async (req, res, next) => {
-  const { userId, currentPassword, newPassword } = req.body;
   try {
-    await userService.updatePassword(userId, currentPassword, newPassword);
+    await userService.updatePassword(req.body as updatePasswordDTO);
     res.json({ message: "update password successful" });
   } catch (err) {
     const error = new HttpError(
@@ -91,9 +83,8 @@ const updatePassword: RequestHandler = async (req, res, next) => {
 };
 
 const deactivateAccount: RequestHandler = async (req, res, next) => {
-  const { userId } = req.body;
   try {
-    await userService.deactivateAccount(userId);
+    await userService.deactivateAccount(req.body as deactivateAccountDTO);
     res.json({ Message: "Delete successful" });
   } catch (err) {
     const error = new HttpError(

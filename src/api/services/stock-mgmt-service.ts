@@ -1,5 +1,6 @@
 import stockMgmtSchema from "../models/stock-mgmt-model";
 import { HttpError } from "../models/http-error";
+import { createStockDTO } from "../../interface/stockMgmt-interface";
 
 const getAllStocks = async (pageSize: number, offSet: number) => {
   offSet = (offSet - 1) * pageSize;
@@ -45,40 +46,16 @@ const getStockByTicker = async (stockSymbol: string) => {
   return stock;
 };
 
-const createStock = async (
-  ticker: string,
-  name: string,
-  sector: string,
-  industry: string,
-  currentPrice: number,
-  dailyHigh: number,
-  dailyLow: number,
-  volume: number,
-  averageVolume: number,
-  marketCap: number,
-  description: string,
-  country: string
-) => {
-  const exisitngStock = await stockMgmtSchema.findOne({ name: name });
+const createStock = async (createStockDTO: createStockDTO) => {
+  const exisitngStock = await stockMgmtSchema.findOne({
+    name: createStockDTO.name,
+  });
 
   if (exisitngStock) {
     throw new HttpError("Stock already exists", 404);
   }
 
-  const newStock = new stockMgmtSchema({
-    ticker,
-    name,
-    sector,
-    industry,
-    currentPrice,
-    dailyHigh,
-    dailyLow,
-    volume,
-    averageVolume,
-    marketCap,
-    description,
-    country,
-  });
+  const newStock = new stockMgmtSchema(createStockDTO);
 
   const result = await newStock.save();
   if (!result) {

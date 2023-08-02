@@ -1,11 +1,11 @@
 import { RequestHandler } from "express";
 import refreshTokenService from "../services/refreshToken-service";
 import { HttpError } from "../models/http-error";
+import { logoutDTO } from "../../interface/refreshToken-interface";
 
 const logout: RequestHandler = async (req, res, next) => {
-  const { userId } = req.body;
   try {
-    await refreshTokenService.logout(userId);
+    await refreshTokenService.logout(req.body as logoutDTO);
     res.json({ message: "Token Deleted" });
   } catch (err) {
     const error = new HttpError("Something went wrong, Unable to logout", 500);

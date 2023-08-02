@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import stockMgmtService from "../services/stock-mgmt-service";
 import { HttpError } from "../models/http-error";
+import { createStockDTO } from "../../interface/stockMgmt-interface";
 
 const getAllStocks: RequestHandler = async (req, res, next) => {
   const { pageSize, offSet } = req.body;
@@ -45,36 +46,8 @@ const getStockByTicker: RequestHandler = async (req, res, next) => {
 };
 
 const createStock: RequestHandler = async (req, res, next) => {
-  const {
-    ticker,
-    name,
-    sector,
-    industry,
-    currentPrice,
-    dailyHigh,
-    dailyLow,
-    volume,
-    averageVolume,
-    marketCap,
-    description,
-    country,
-  } = req.body;
-
   try {
-    await stockMgmtService.createStock(
-      ticker,
-      name,
-      sector,
-      industry,
-      currentPrice,
-      dailyHigh,
-      dailyLow,
-      volume,
-      averageVolume,
-      marketCap,
-      description,
-      country
-    );
+    await stockMgmtService.createStock(req.body as createStockDTO);
     res.json({ message: "Stock created" });
   } catch (err) {
     const error = new HttpError(

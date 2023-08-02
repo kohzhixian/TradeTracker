@@ -1,17 +1,11 @@
 import { RequestHandler } from "express";
 import stockHoldingsService from "../services/stockHoldings-service";
 import { HttpError } from "../models/http-error";
+import { createTradeDTO } from "../../interface/stockHoldings-interface";
 
 const createTrade: RequestHandler = async (req, res, next) => {
-  const { userId, action, ticker, quantity, entryPrice } = req.body;
   try {
-    await stockHoldingsService.createTrade(
-      userId,
-      action,
-      ticker,
-      quantity,
-      entryPrice
-    );
+    await stockHoldingsService.createTrade(req.body as createTradeDTO);
     res.json({ message: "stockHoldings created" });
   } catch (err) {
     const error = new HttpError(
