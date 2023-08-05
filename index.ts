@@ -9,6 +9,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 import { HttpError } from "./src/api/models/http-error";
+import salesTransactionRoutes from "./src/api/routes/stockSalesTransaction-routes";
 
 const app = express();
 app.use(express.json());
@@ -73,3 +74,4 @@ app.use("/api/users", userRoutes);
 app.use("/api/trades", tradeMgmtRoutes);
 app.use("/api/stocks", stockMgmtRoutes);
 app.use("/api/refreshtoken", refreshTokenRoutes);
+app.use("/api/salesTransaction", salesTransactionRoutes);
