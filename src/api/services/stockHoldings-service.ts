@@ -6,13 +6,18 @@ import stockHoldingsSchema, {
 import { getFormattedDate, getFormattedNumber } from "../../utils/date-utils";
 import mongoose from "mongoose";
 import { createTradeDTO } from "../../interface/stockHoldings-interface";
+import { calculateStockAveragePrice } from "../../utils/trade-utils";
 
 const createTrade = async (createTradeDTO: createTradeDTO) => {
   //Get Current Date in the format 'YYYMMDD'
   const entryDate = new Date();
   const currentEntryDate = getFormattedDate(entryDate);
-  const stockOnHand = 123; // calculate stockOnHand
-  const stockAveragePrice = 234; // calculate stockAveragePrice
+  //TODO: calculate stockOnHand
+  const stockOnHand = 123;
+
+  //TODO: alculate stockAveragePrice
+  let stockAveragePrice: number = 0;
+  let totalNumberOfStocks: number = 0;
 
   const userId = createTradeDTO.userId;
   const action = createTradeDTO.action;
@@ -49,7 +54,6 @@ const createTrade = async (createTradeDTO: createTradeDTO) => {
           action,
           ticker,
           stockOnHand,
-          stockAveragePrice,
           entryTransactionID: "$purchaseTransaction.entryTransactionID",
           quantity: "$purchaseTransaction.quantity",
           entryPrice: "$purchaseTransaction.entryPrice",
@@ -81,12 +85,21 @@ const createTrade = async (createTradeDTO: createTradeDTO) => {
     entryPrice,
     entryDate,
   };
-
+  let totalStockPrice: number = 0;
   //Create new Trade
   const tickerExist = (await stockHoldingsSchema.findOne({
     ticker: ticker,
   })) as IStockHoldingsModel;
   if (tickerExist) {
+    const result = calculateStockAveragePrice(
+      totalStockPrice,
+      totalNumberOfStocks,
+      stockAveragePrice,
+      createTradeDTO,
+      tickerExist.purchaseTransaction
+    );
+    tickerExist.stockAveragePrice = result.stockAveragePrice;
+    tickerExist.stockOnHand = result.totalNumberOfStocks;
     tickerExist.purchaseTransaction.push(newStockPurchaseTransaction);
     await tickerExist.save();
   } else {
@@ -94,83 +107,14 @@ const createTrade = async (createTradeDTO: createTradeDTO) => {
       userId,
       action,
       ticker,
-      stockOnHand,
-      stockAveragePrice,
+      stockOnHand: createTradeDTO.quantity,
+      stockAveragePrice: createTradeDTO.entryPrice,
       purchaseTransaction: newStockPurchaseTransaction,
     });
     await newStockHoldings.save();
   }
 };
 
-// const getAllTrades = async (pageSize: number, offSet: number) => {
-//   offSet = (offSet - 1) * 10;
-//   try {
-//     const trades = await trademgmtSchema
-//       .find()
-//       .limit(pageSize)
-//       .skip(offSet)
-//       .sort({})
-//       .exec();
-//     return trades;
-//   } catch (err) {
-//     throw new Error("No trades found");
-//   }
-// };
-
-// const updateTrade = async (tradeId: string, volume: number) => {
-//   // let existingTrade;
-//   // try {
-//   //   existingTrade = await trademgmtSchema.findOne({ _id: tradeId });
-//   // } catch (err) {
-//   //   throw new Error("No Trade found");
-//   // }
-//   // if (!existingTrade) {
-//   //   throw new Error("No Trade found !!!");
-//   // }
-//   // existingTrade.volume = volume;
-//   // const result = calculateEarnings(
-//   //   existingTrade.volume,
-//   //   existingTrade.price_per_share,
-//   //   existingTrade.exit_price
-//   // );
-//   // existingTrade.total_purchase = result.total_purchase;
-//   // existingTrade.total_sell_price = result.total_sell_price;
-//   // existingTrade.earnings = result.earnings;
-//   // try {
-//   //   await existingTrade.save();
-//   // } catch (err) {
-//   //   throw new Error("cannot update trade");
-//   // }
-// };
-
-// const getTradeById = async (tradeId: string) => {
-//   try {
-//     const result = await trademgmtSchema.findOne({ _id: tradeId });
-//     return result;
-//   } catch (err) {
-//     throw new Error("Cannot find any trade !");
-//   }
-// };
-
-// const getTradeByTicker = async (ticker: string) => {
-//   let stock;
-//   ticker = ticker.toUpperCase();
-//   try {
-//     stock = await stockmgmtSchema.findOne({ ticker: ticker });
-//     if (!stock) {
-//       throw new Error("No stock found");
-//     }
-//     const trades = await trademgmtSchema.find({ stockId: stock._id });
-//     return trades;
-//   } catch (err) {
-//     throw new Error("Error finding trade");
-//   }
-// };
-
 export default {
   createTrade,
-  // getAllTrades,
-  // updateTrade,
-  // getTradeById,
-  // getTradeByTicker,
 };

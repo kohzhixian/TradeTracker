@@ -23,7 +23,6 @@ export interface AggregateResult {
   action: "Long" | "Short";
   ticker: string;
   stockOnHand: number;
-  stockAveragePrice: number;
   entryTransactionID: string;
   quantity: number;
   entryPrice: number;

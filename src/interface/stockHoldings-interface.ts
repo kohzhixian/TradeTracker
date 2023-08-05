@@ -7,3 +7,10 @@ export interface createTradeDTO {
   quantity: number;
   entryPrice: number;
 }
+
+export interface purchaseTransaction {
+  entryTransactionID: string;
+  quantity: number;
+  entryPrice: number;
+  entryDate: Date;
+}
