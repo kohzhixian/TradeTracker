@@ -11,7 +11,7 @@ export interface registerDTO {
   lastName: string;
   password: string;
   profileImage: string;
-  companyCode: string;
+  secretCode: string;
 }
 
 export interface updateProfileDTO {

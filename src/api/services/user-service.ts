@@ -119,7 +119,7 @@ const register = async (registerDTO: registerDTO) => {
   if (registerDTO.profileImage == "") {
     registerDTO.profileImage = "default-image.jpg";
   }
-  if (registerDTO.companyCode !== "ABC") {
+  if (registerDTO.secretCode !== process.env.SECRETCODE) {
     throw new HttpError("Invalid Company Code", 404);
   }
 

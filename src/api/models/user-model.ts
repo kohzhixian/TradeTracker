@@ -8,7 +8,7 @@ export interface IUser {
   password: string;
   isDeleted: boolean;
   profileImage: string;
-  companyCode: string;
+  secretCode: string;
 }
 
 export interface IUserModel extends IUser, Document {}
@@ -42,7 +42,7 @@ const userSchema: Schema = new Schema(
     profileImage: {
       type: String,
     },
-    companyCode: {
+    secretCode: {
       type: String,
     },
   },
