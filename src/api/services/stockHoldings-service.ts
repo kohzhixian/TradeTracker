@@ -7,6 +7,7 @@ import { getFormattedDate, getFormattedNumber } from "../../utils/date-utils";
 import mongoose from "mongoose";
 import { createTradeDTO } from "../../interface/stockHoldings-interface";
 import { calculateStockAveragePrice } from "../../utils/trade-utils";
+import { HttpError } from "../models/http-error";
 
 const createTrade = async (createTradeDTO: createTradeDTO) => {
   //Get Current Date in the format 'YYYMMDD'
@@ -115,6 +116,19 @@ const createTrade = async (createTradeDTO: createTradeDTO) => {
   }
 };
 
+const getAllTrade = async (tradeId: string) => {
+  const result = await stockHoldingsSchema.find({ _id: tradeId }).sort({});
+  if (!result) {
+    throw new HttpError("No Trades found", 404);
+  }
+  const sortedResult = result[0].purchaseTransaction.sort((a, b) => {
+    return a.entryDate < b.entryDate ? 1 : -1;
+  });
+  console.log(sortedResult);
+  return result;
+};
+
 export default {
   createTrade,
+  getAllTrade,
 };

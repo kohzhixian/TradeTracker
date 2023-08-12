@@ -3,6 +3,7 @@ import stockHoldingsController from "../controllers/stockHoldings-controller";
 
 const router = express.Router();
 
+router.get("/getAllTrade", stockHoldingsController.getAllTrade);
 router.post("/createStockHoldings", stockHoldingsController.createTrade);
 
 // router.get('/', tradeMgmtController.getAllTrades);

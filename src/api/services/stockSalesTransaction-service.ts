@@ -2,10 +2,23 @@ import stockSalesTransactionModel from "../models/stockSalesTransaction-model";
 import { salesTransactionDTO } from "../../interface/stockSalesTransaction-interface";
 import { getFormattedDate, getFormattedNumber } from "../../utils/date-utils";
 import { HttpError } from "../models/http-error";
+import stockholdingsModel from "../models/stockholdings-model";
 
 const createSalesTransaction = async (
   salesTransactionDTO: salesTransactionDTO
 ) => {
+  //check if there is stockholdings for ticker
+  const existingStockHoldingsForTicker = await stockholdingsModel.findOne({
+    ticker: salesTransactionDTO.ticker,
+  });
+
+  if (!existingStockHoldingsForTicker) {
+    throw new HttpError(
+      "You do not have any stocksOnHand for this ticker",
+      404
+    );
+  }
+
   const exitDate = new Date();
   const formattedExitDate = getFormattedDate(exitDate);
 
@@ -38,6 +51,37 @@ const createSalesTransaction = async (
   if (!newSalesTransaction) {
     throw new HttpError("Failed to create sales transaction", 404);
   }
+
+  const sortedPurchaseTransaction =
+    existingStockHoldingsForTicker.purchaseTransaction.sort((a, b) => {
+      return a.entryDate < b.entryDate ? 1 : -1;
+    });
+  const quantityToRemove = 500;
+  let remainingToRemove = quantityToRemove;
+
+  for (
+    let i = 0;
+    i < sortedPurchaseTransaction.length;
+
+  ) {
+    if (
+      sortedPurchaseTransaction[0].quantity <=
+      remainingToRemove
+    ) {
+      remainingToRemove -= quantityToRemove;
+      sortedPurchaseTransaction.splice(i, 1);
+    }else{
+      sortedPurchaseTransaction[i].quantity -= remainingToRemove;
+      remainingToRemove = 0;
+      i++;
+    }
+  }
+
+  if(remainingToRemove <= 0){
+    console.log("No more stocks left to sell");
+  }
+
+  console.log(sortedPurchaseTransaction);
 
   return newSalesTransaction;
 };
